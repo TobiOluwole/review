@@ -1,7 +1,7 @@
 import * as sharp from "sharp";
 
 const isValidPrescription = (str: string): boolean => {
-    return /^[+-]?(\d+(\.\d*)?|\.\d+)$/.test(str);
+    return /^[+-]?(\d+(\.\d*)?|\.\d+)$/.test(str); // tests for a number
 };
 
 export default async ( transformer: sharp.Sharp, prescriptions: string, metadata: sharp.Metadata ) => {

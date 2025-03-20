@@ -10,8 +10,13 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Get()
-  getHello(): string {
-    return this.imagesService.getHello();
+  async getBlank(
+    @Res() res: Response,
+    @Query('src') src: string
+  ) {
+    const image = await this.imagesService.getImage(src, {});
+
+    image.pipe(res)
   }
 
   @Get(":operation")

@@ -6,7 +6,7 @@ export const IOperation = {
 
 
 export type IImageOptions = {
-  operation: string
+  operation?: string
 }
 
 export type OperationFunction = 
