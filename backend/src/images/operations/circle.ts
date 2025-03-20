@@ -7,13 +7,13 @@ const isValidPrescription = (str: string): boolean => {
 
 export default async ( transformer: sharp.Sharp, prescriptions: string, metadata: sharp.Metadata) => {
 
-    if(!isValidPrescription(prescriptions)) return transformer // consider returning 422 errors instead
+    if(!isValidPrescription(prescriptions)) return {transformer, metadata} // consider returning 422 errors instead
 
     let diameter : number
 
     if(prescriptions.includes('px')){
 
-        diameter = parseInt(prescriptions.replace('px', ''));
+        diameter = parseInt(prescriptions.replaceAll('px', ''));
 
     }else{
 

@@ -10,7 +10,7 @@ const isValidPrescription = (str: string): boolean => {
 
 export default async ( transformer: sharp.Sharp, prescriptions: prescriptionType, metadata: sharp.Metadata ) => {
 
-    if(!isValidPrescription(prescriptions)) return transformer // consider returning 422 errors instead
+    if(!isValidPrescription(prescriptions)) return {transformer, metadata} // consider returning 422 errors instead
 
     const kernels: kernalType[] = [
         'nearest',
