@@ -1,7 +1,7 @@
 import * as sharp from "sharp";
 
 const isValidPrescription = (str: string): boolean => {
-    const regex =  /^\(([^,]*)?(?:,(\d+))?\)$/;
+    const regex =  /^([^,]*)?(?:,(\d+))?$/;
 //     (hello,123)	✅ Yes
 // (hello)	✅ Yes
 // (,123)	✅ Yes
@@ -18,7 +18,7 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
 
     if(!isValidPrescription(prescriptions)) return {transformer, metadata} // consider returning 422 errors instead
 
-    let [background, threshold] : (string|number)[] = prescriptions.replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').split(',')
+    let [background, threshold] : (string|number)[] = prescriptions.replaceAll(' ', '').split(',')
 
     background = /^[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(background) ? '#'+background : background
     threshold = parseInt(threshold)

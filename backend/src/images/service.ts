@@ -52,12 +52,14 @@ export class ImagesService {
 
       for (const operationString of operations) {
 
-        const [operation, prescriptions] = operationString.split('_')
+        // const [operation, prescriptions] = operationString.split('_')
+        let [operation, prescriptions] = operationString.split('(')
+        prescriptions = prescriptions.replaceAll(')','')
 
         try{
-          if(operation && prescriptions){
+          // if(operation && prescriptions){
             ({transformer, metadata} = await imageOperations[operation](transformer, prescriptions, metadata))
-          }
+          // }
         }catch(e){
             console.log('operations error',[operation, prescriptions],e)
         }

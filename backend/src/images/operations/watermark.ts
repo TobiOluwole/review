@@ -1,7 +1,7 @@
 import * as sharp from "sharp";
 
 const isValidPrescription = (str: string): boolean => {
-    const regex = /^\(\s*([a-zA-Z\s]+)\s*,\s*([a-zA-Z]+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/; 
+    const regex = /^\s*([a-zA-Z\s]+)\s*,\s*([a-zA-Z]+)\s*,\s*(\d+)\s*,\s*(\d+)\s*$/;
     /**
      * (text,color,font size (px),setting)
 ✅ (red,blue,50,75)
@@ -17,7 +17,7 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
 
     if(!isValidPrescription(prescriptions)) return {transformer, metadata} // consider returning 422 errors instead
 
-    let [text, color, fontSize, setting] = prescriptions.replaceAll('(','').replaceAll(')','').split(',')
+    let [text, color, fontSize, setting] = prescriptions.split(',')
 
     color = /^[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(color) ? '#'+ color : color
     

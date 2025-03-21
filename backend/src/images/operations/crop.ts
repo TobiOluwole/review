@@ -1,7 +1,7 @@
 import * as sharp from "sharp";
 
 const isValidPrescription = (str: string): boolean => {
-    const regex = /^\(\s*(\d+px?|\d+)\s*,\s*(\d+px?|\d+)\s*,\s*(\d+px?|\d+)\s*,\s*(\d+px?|\d+)\s*\)$/; 
+    const regex = /^\s*(\d+px?|\d+)\s*,\s*(\d+px?|\d+)\s*,\s*(\d+px?|\d+)\s*,\s*(\d+px?|\d+)\s*$/; 
     /**
      * examples of match
      * 
@@ -17,7 +17,7 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
 
     if(!isValidPrescription(prescriptions)) return {transformer, metadata} // consider returning 422 errors instead
 
-    let [left, top, width, height] : (number | string)[] = prescriptions.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').split(',')
+    let [left, top, width, height] : (number | string)[] = prescriptions.replaceAll(' ', '').split(',')
 
     left = left.endsWith('px') ? parseInt(left.replaceAll('px', '')) : Math.round(metadata.width! * ( parseInt(left) / 100))
     top = top.endsWith('px') ? parseInt(top.replaceAll('px', '')) : Math.round(metadata.height! * ( parseInt(top) / 100))
