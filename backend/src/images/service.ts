@@ -4,7 +4,7 @@ import * as sharp from 'sharp';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { isImage, isValidURL } from '../helpers/functions'
+import { isImage, isMulterFile, isValidURL } from '../helpers/functions'
 import { IImageOptions } from 'src/helpers/interface';
 import imageOperations from './operations';
 
@@ -14,21 +14,23 @@ export class ImagesService {
     return 'Hello World! from images';
   }
 
-  async getImage(src: string, options: IImageOptions){
-
-    let imagePath: string | ArrayBuffer;
-
-    if(isValidURL(src)) { 
-      imagePath = await isImage(src) // get image from url and check if isvalid image
-    }else{ 
-      imagePath = join(__dirname, '../..', 'images', src);
-      if (!fs.existsSync(imagePath)) {
-        throw new NotFoundException();
-      }
+  private async image(src: string | Express.Multer.File){
+    if(isMulterFile(src)){
+      return src.buffer
+    }else if(isValidURL(src as string)) { 
+      return await isImage(src as string) // get image from url and check if isvalid image
+    }else if (fs.existsSync(join(__dirname, '../..', 'images', src as string))) {
+      return join(__dirname, '../..', 'images', src as string)
+    } else{
+      throw new NotFoundException();
     }
+  }
 
+  async getImage(src: string | Express.Multer.File, options: IImageOptions){
+    
+    const image = await this.image(src)
 
-    let transformer = sharp(imagePath)
+    let transformer = sharp(image)
     let metadata = await transformer.metadata()
 
     /**
@@ -54,7 +56,7 @@ export class ImagesService {
 
         // const [operation, prescriptions] = operationString.split('_')
         let [operation, prescriptions] = operationString.split('(')
-        prescriptions = prescriptions.replaceAll(')','')
+        prescriptions = prescriptions?.replaceAll(')','')
 
         try{
           // if(operation && prescriptions){

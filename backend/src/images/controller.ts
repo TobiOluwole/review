@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Query, Res, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
 import { ImagesService } from './service';
 import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
 import * as crypto from 'crypto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('images')
 // @UseInterceptors(CacheInterceptor) 
@@ -24,6 +25,22 @@ export class ImagesController {
     @Res() res: Response,
     @Param('operation') operation: string,
     @Query('src') src: string
+  ) {
+
+    // !!!IMPORTANT -- WORKING ON CACHING
+    
+    const image = await this.imagesService.getImage(src, { operation });
+
+    image.pipe(res)
+  }
+
+  @Post(":operation")
+  @UseInterceptors(FileInterceptor('src'))
+  // @UseInterceptors(FileInterceptor('src', { storage: diskStorage({ destination: './uploads' }) }))
+  async getImageFromPost(
+    @Res() res: Response,
+    @Param('operation') operation: string,
+    @UploadedFile() src: Express.Multer.File
   ) {
 
     // !!!IMPORTANT -- WORKING ON CACHING

@@ -23,12 +23,22 @@ export async function isImage(url: string): Promise<ArrayBuffer> {
         const response = await axios.head(url);
         const contentType = response.headers['content-type'];
         if (contentType && contentType.startsWith('image/')) {
-        
             return await downloadImage(url);
         } else {
             throw new UnprocessableEntityException();
         }
     } catch (error) {
+        console.log(error)
         throw new InternalServerErrorException();
     }
 }
+
+export function isMulterFile(src: any): src is Express.Multer.File {
+    return (
+      src &&
+      typeof src === 'object' &&
+      typeof src.buffer === 'object' &&
+      typeof src.originalname === 'string' &&
+      typeof src.mimetype === 'string'
+    );
+  }
