@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
 import { ImagesService } from './service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -21,12 +21,23 @@ export class ImagesController {
     image.pipe(res)
   }
 
+  @Post('save')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('name') name: string,
+  ) {
+    return await this.imagesService.saveImage(file, name)
+  }
+
+  @Delete('delete')
+  async deleteImage(
+    @Query('name') name: string,
+  ) {
+    return await this.imagesService.deleteImage(name)
+  }
+
   @Get(":operation")
-  @ApiOperation({ summary: 'Process an image', description: 'Applies an operation to an image and returns the transformed result.' })
-  @ApiParam({ name: 'operation', required: true, example: 'resize(300x300);circle(100)', description: 'The image operation to apply (e.g., resize 300px by 300px, crop out circle).' })
-  @ApiQuery({ name: 'src', required: true, example: 'image1.png', description: 'The image path relative to images/' })
-  @ApiResponse({ status: 200, description: 'Processed successfully.' })
-  @ApiProduces('image/png')
   async getImage(
     @Res() res: Response,
     @Param('operation') operation: string,
@@ -36,7 +47,7 @@ export class ImagesController {
     // !!!IMPORTANT -- WORKING ON CACHING
     
     const image = await this.imagesService.getImage(src, { operation });
-    res.setHeader('Content-Type', 'image/*');
+    // res.setHeader('Content-Type', 'image/*');
     image.pipe(res)
   }
 

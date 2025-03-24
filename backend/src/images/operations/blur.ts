@@ -12,7 +12,7 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
     const softNumber = parseInt(prescriptions) > 100 ? 100 : parseInt(prescriptions)
 
     return {
-        transformer: transformer.blur(parseInt(prescriptions)),
+        transformer: transformer.blur(softNumber),
         metadata
     }
 }

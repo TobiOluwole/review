@@ -12,7 +12,7 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
     const softNumber = parseInt(prescriptions) > 100 ? 100 : parseInt(prescriptions)
 
     return {
-        transformer: transformer.median(parseInt(prescriptions)),
+        transformer: transformer.median(softNumber),
         metadata
     }
 }

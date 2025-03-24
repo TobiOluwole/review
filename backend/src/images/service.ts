@@ -1,12 +1,14 @@
-import { join } from 'path';
+import { join, extname, relative } from 'path';
 import * as fs from 'fs';
 import * as sharp from 'sharp';
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
 import { isImage, isMulterFile, isValidURL } from '../helpers/functions'
 import { IImageOptions } from 'src/helpers/interface';
 import imageOperations from './operations';
+
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class ImagesService {
@@ -77,4 +79,49 @@ export class ImagesService {
     })
     .toFormat(metadata.format!);
   }
+
+  
+  async saveImage(file, name = Date.now() + randomBytes(8).toString('hex')) {
+    // Extract the file extension from the original filename
+    const fileExtension = extname(file.originalname);
+    
+    // Append the original file extension to the new name
+    const fullName = name + fileExtension;
+  
+    const path = fullName.split('/').slice(0, -1).join('/');
+    const uploadPath = join(__dirname, '../..', 'images');
+    const uploadDir = join(__dirname, '../..', 'images', path);
+    // const uploadPath = path ? join(__dirname, '../..', 'images', path) : join(__dirname, '../..', 'images');
+
+  
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+  
+    const filePath = join(uploadPath, fullName);
+  
+    fs.writeFileSync(filePath, file.buffer);
+  
+    return relative(uploadPath, filePath + '.' + extname);
+  }
+
+  async deleteImage(name: string){
+    const imagesDir = join(__dirname, '../..', 'images');
+    
+    // Construct the full path to the file
+    const filePath = join(imagesDir, name);
+
+    // Check if the file exists before attempting to delete
+    if (fs.existsSync(filePath)) {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          throw new InternalServerErrorException()
+        } else {
+          return true
+        }
+      });
+    } else {
+      throw new NotFoundException()
+    }
+    }
 }
