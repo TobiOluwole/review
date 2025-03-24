@@ -6,6 +6,7 @@ import circle from './circle'
 import crop from './crop'
 import detail from './detail'
 import enhance from './enhance'
+import extension from './extension'
 import fit from './fit'
 import flip from './flip'
 import gamma from './gamma'
@@ -37,6 +38,8 @@ export default {
     crop, // crops out a square from the image, you chose where to start and how big
     detail,// choose how detailed you'd liek the image, less details is faster
     enhance, //sharp clache function.. whatever that does
+    extension, // change file extension
+    extention: extension,
     fit, //fit image into pixel space
     flip, //flip image by x or why axis
     gamma, // changes the gamma.. apperenly

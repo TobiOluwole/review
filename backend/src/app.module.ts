@@ -19,7 +19,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       isGlobal: true,
     })
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Param, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { Response } from 'express';
 import { ImagesService } from './service';
-import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
-import * as crypto from 'crypto';
 import { FileInterceptor } from '@nestjs/platform-express';
+
+import { ApiOperation, ApiParam, ApiQuery, ApiBody, ApiResponse } from '@nestjs/swagger';
+
 
 @Controller('images')
 // @UseInterceptors(CacheInterceptor) 

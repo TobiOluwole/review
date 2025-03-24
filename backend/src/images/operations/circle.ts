@@ -1,3 +1,4 @@
+import { format } from "path";
 import * as sharp from "sharp";
 
 const isValidPrescription = (str: string): boolean => {
@@ -31,6 +32,10 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
       );
 
     return {
+        // this can't work if any resizing is done afterwards
+        // transformer: transformer.composite([
+        //         { input: mask, blend: 'dest-in' } // Apply mask using 'dest-in' blend mode
+        //     ]),
         transformer: sharp(
                 await transformer.composite([
                 { input: mask, blend: 'dest-in' } // Apply mask using 'dest-in' blend mode

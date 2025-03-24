@@ -60,7 +60,10 @@ export class ImagesService {
 
         try{
           // if(operation && prescriptions){
-            ({transformer, metadata} = await imageOperations[operation](transformer, prescriptions, metadata))
+          console.time('');
+          ({transformer, metadata} = await imageOperations[operation](transformer, prescriptions, metadata))
+          console.log('Ran',operation,'on height:',metadata.height,' and width:',metadata.width, 'for')
+          console.timeEnd('')
           // }
         }catch(e){
             console.log('operations error',[operation, prescriptions],e)

@@ -47,11 +47,15 @@ export default async ( transformer: sharp.Sharp, prescriptions: string, metadata
     ]
 
     return {
+        // this can't work if any resizing is done afterwards
+        // transformer: transformer.composite([
+        //         {input: Buffer.from(waterMarkStyle[parseInt(setting) - 1]), blend: 'over'}
+        //     ]),
         transformer: sharp(
             await transformer.composite([
-            {input: Buffer.from(waterMarkStyle[parseInt(setting) - 1])}
-        ]).toBuffer()
-    ),
+                {input: Buffer.from(waterMarkStyle[parseInt(setting) - 1])}
+            ]).toBuffer()
+        ),
         metadata
     }
 }
