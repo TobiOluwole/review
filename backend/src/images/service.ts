@@ -70,16 +70,11 @@ export class ImagesService {
         }
       }
     }
-
-
-    // .extend({
-    //   top: 10,
-    //   bottom: 20,
-    //   left: 10,
-    //   right: 10,
-    //   background: { r: 0, g: 0, b: 0, alpha: 0 }
-    // });
-
-    return transformer.toFormat(metadata.format!);
+    
+    return transformer
+    .withExifMerge({
+      "IFD0": {SideNote: "This image was eddited by Re-View; an open source project by Tobi Oluwole"}
+    })
+    .toFormat(metadata.format!);
   }
 }

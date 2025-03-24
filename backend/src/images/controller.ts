@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { ImagesService } from './service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { ApiOperation, ApiParam, ApiQuery, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiBody, ApiResponse, ApiProduces } from '@nestjs/swagger';
 
 
 @Controller('images')
@@ -22,6 +22,11 @@ export class ImagesController {
   }
 
   @Get(":operation")
+  @ApiOperation({ summary: 'Process an image', description: 'Applies an operation to an image and returns the transformed result.' })
+  @ApiParam({ name: 'operation', required: true, example: 'resize(300x300);circle(100)', description: 'The image operation to apply (e.g., resize 300px by 300px, crop out circle).' })
+  @ApiQuery({ name: 'src', required: true, example: 'image1.png', description: 'The image path relative to images/' })
+  @ApiResponse({ status: 200, description: 'Processed successfully.' })
+  @ApiProduces('image/png')
   async getImage(
     @Res() res: Response,
     @Param('operation') operation: string,
@@ -31,7 +36,7 @@ export class ImagesController {
     // !!!IMPORTANT -- WORKING ON CACHING
     
     const image = await this.imagesService.getImage(src, { operation });
-
+    res.setHeader('Content-Type', 'image/*');
     image.pipe(res)
   }
 
