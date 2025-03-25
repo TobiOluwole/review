@@ -123,5 +123,5 @@ export class ImagesService {
     } else {
       throw new NotFoundException()
     }
-    }
+  }
 }

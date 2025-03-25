@@ -1,250 +1,155 @@
-# Image Processing API Documentation
+# **📸 Image Processing API - Docker Overview**  
 
-## Base URL
-`/images`
+## **📝 About**  
+The **Image Processing API** is a flexible and powerful **Nest.js-based** API for **real-time image transformations**.  
+It supports operations like **resizing, cropping, filtering, watermarking, and format conversion**, with the ability to **chain multiple transformations** in one request!  
 
-## Endpoints
-### GET `/images/:operation?src=<image_path/image_url>`
-### POST `/images/:operation` (with file upload)
+---
 
-## Detailed Operations Guide
+## **🚀 Running with Docker**  
 
-### Sizing Operations
-
-#### Width (`width` or `w`)
-```
-width(value)
-```
-Options:
-- Pixels: `width(300)` - Sets width to 300px
-- Percentage: `width(50)` - Sets width to 50% of original
-
-#### Height (`height` or `h`)
-```
-height(value)
-```
-Options:
-- Pixels: `height(300)` - Sets height to 300px
-- Percentage: `height(50)` - Sets height to 50% of original
-
-#### Resize
-```
-resize(dimensions)
-```
-Options:
-- Pixels: `resize(300x200)` - Width 300px, height 200px
-- Percentage: `resize(50)` - 50% of original size
-- Maintain aspect ratio:  use either `h(...) or w(...)`
-
-#### Fit
-```
-fit(dimensions)
-```
-Options:
-- `cover, contain, fill, inside, outside`
-- `fit(contain)` - Contains whole image (either height or width might be ignored so whole image can return)
-- `fit(cover)` - Preserving aspect ratio, attempt to ensure the image covers both provided dimensions by cropping/clipping to fit
-- `fit(fill) ` - Ignore aspect ratio, squeeze or stretch image to fit set width or/ and height
-- `fit(inside) ` - Preserving aspect ratio, resize the image to be as large as possible, using set height or/and width as maximum possible values
-- `fit(outside) ` - Preserving aspect ratio, resize the image to be as small as possible, using set height or/and width as minimum possible values
-
-```
-position(preset)
-```
-Options:
-- `'center','top','right-top','right','right-bottom','bottom','left-bottom','left','left-top','entropy','attention'`
-- Sample `position(contain)` - CHoose where to focus on while clipping the rest of the image (from your crop)
-
-### Color Operations
-
-#### Black and White (`blackandwhite`, `baw`, or `bw`)
-```
-blackandwhite(threshold?)
-```
-Options:
-- Simple: `blackandwhite()` - Default conversion
-- Threshold: `blackandwhite(128)` - Custom threshold (0-255)
-
-#### Grayscale (`gray` or `grey`)
-```
-gray()
-```
-Options:
-- `gray()` - Standard grayscale
-
-#### Negative (`negative`)
-```
-negative()
-```
-Options:
-- `negative()` - applies a negative filter
-
-#### Grayscale (`normalise` or `normalize`)
-```
-normalise(top, bottom)
-```
-Options:
-- `normalise([1-100], [1-100])` - Enhance output image contrast by stretching its luminance to cover a full dynamic range.
-
-#### Tint
-```
-tint(r,g,b,a?)
-```
-Options:
-- RGB: `tint(255,0,0)` - Red tint
-- RGBA: `tint(255,0,0,0.5)` - Semi-transparent red
-- Hex: `tint(FF0000)` - Red using hex (hex will be added in code.. do not add in  url)
-- Named: `tint(red)` - Using color name
-
-#### Adjust
-```
-adjust(brightness, saturation, hue, lightness)
-```
-Options:
-- `adjust(1.2;1.5,0,0)`
-
-#### Trim
-Description:
-Removes "empty" space around an image by trimming pixels matching the image background color.
-
-Options:
-- Simple: `trim()` - Automatically detects and removes background
-- Threshold: `trim(10)` - Tolerance threshold for background color matching (1-99)
-  - Lower values = more precise matching
-  - Higher values = more aggressive trimming
-- Background: `trim(10,white)` - Specify background color to trim
-  - Can use named colors: `white`, `black`, etc.
-  - Hex colors: `#FFFFFF`
-  - RGB: `rgb(255,255,255)`
-
-Examples:
-```http
-GET /images/trim()?src=image-with-whitespace.png
-GET /images/trim(black)?src=image-with-borders.jpg
-GET /images/trim(black, 5)?src=image-with-black-borders.png
+### **1️⃣ Pull the Docker Image**  
+```sh
+docker pull tobioluwole/re-view:1.0.0
 ```
 
-Best used for:
-- Removing unwanted borders
-- Cleaning up scanned images
-- Optimizing image space
-- Removing excess transparent areas in PNG files
+### **2️⃣ Run the Container**  
+```sh
+docker run -d -p 3000:3000 tobioluwole/re-view
+```
+Now access the API at:  
+```
+http://localhost:3000
+```
 
-Note: The operation is particularly useful for:
-- Product photos with solid backgrounds
-- Scanned documents
-- Screenshots with excess space
-- PNG images with transparent edges
+---
 
-### Enhancement Operations
-#### Enhance
-```
-enhance(width, height, maxSlope)
-```
-Options:
-- `enhance(10,20, [default- 3])` - Perform contrast limiting adaptive histogram equalization (CLAHE)
+# **📌 API Usage**  
 
-#### Sharpen
+## **🔗 Base URL**  
 ```
-sharpen(preset: [1-10])
+/images
 ```
-Options:
-- `sharpen(1)` - sharpen with 10 preset intensities..
 
-#### Blur
-```
-blur(percent: [1-100])
-```
-Options:
-- `blur(5)` - Blur intensity
+## **🔹 Available Endpoints**  
 
-#### Smooth
-```
-smooth(percent: [1-100])
-```
-Options:
-- `smooth(10)` - i like to call smooth smudge
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| **GET** | `/images/:operation?src=<image_url>` | Apply transformations via URL |
+| **POST** | `/images/:operation` (upload file) | Process uploaded image |
+| **POST** | `/images/save` (upload file) | Save an image for reuse |
+| **POST** | `/images/delete?name=<image_path/image_url>` | Delete saved images |
 
-#### Detail
-```
-detail(preset[1,2,3,4,5])
-```
-Options:
-- `detail(1)` - the higher the number,the better but also uses more processing and time
+---
 
-### Transformation Operations
+# **🛠️ Supported Image Operations**  
 
-#### Rotate
-```
-rotate(degrees)
-```
-Options:
-- Degrees: `rotate(90)` - 90° clockwise
+## **📏 Sizing Operations**  
+| Operation | Usage | Example |
+|------------|-----------|-----------|
+| **Width** | `width(px)` | `width(300)` → Resize to 300px wide |
+| **Height** | `height(px)` | `height(200)` → Resize to 200px tall |
+| **Resize** | `resize(widthxheight)` | `resize(300x200)` |
+| **Fit** | `fit(mode)` | `fit(cover)`, `fit(contain)`, `fit(fill)`, `fit(scale-down)` |
+| **Positioning** | `position(type)` | `position(center)`, `position(top)`, `position(left)`, `position(right)`, `position(bottom)`, `position(left-top)`, `position(left-bottom)`, `position(right-top)`, `position(right-bottom)`, `position(center-left)`, `position(center-right)`, `position(top-left)`, `position(top-right)`, `position(bottom-left)`, `position(bottom-right)`, `position(entropy)`, `position(attention)` |
 
-#### Flip
-```
-flip(axis)
-```
-Options:
-- Horizontal: `flip(x)`
-- Vertical: `flip(y)`
+---
 
-#### Crop
-```
-crop(x,y,width,height)
-```
-Options:
-- Pixels: `crop(0,0,300,300)` - From top-left
+## **🎨 Color Operations**  
+| Operation | Usage | Example |
+|------------|-----------|-----------|
+| **Black & White** | `blackandwhite(threshold)` | `blackandwhite(128)` (Threshold: 0-255) |
+| **Grayscale** | `gray()` | `gray()` (Convert to grayscale) |
+| **Negative** | `negative()` | `negative()` (Invert colors) |
+| **Normalize** | `normalise(low, high)` | `normalise(5, 95)` (Enhance contrast) |
+| **Tint** | `tint(r,g,b,alpha)` | `tint(255,0,0,0.5)` (Red tint 50% opacity) |
+| **Adjust** | `adjust(brightness,contrast,hue,saturation)` | `adjust(1.2,1.5,0,0)` |
 
-#### Circle
-```
-circle(radius in percentage)
-```
-Options:
-- Radius: `circle(100)` - Specific radius in percent.. 100 = full circle
+---
 
-### Other Operations
+## **🖼️ Image Enhancement**  
+| Operation | Usage | Example |
+|------------|-----------|-----------|
+| **Trim** | `trim(color,tolerance)` | `trim(black,10)` |
+| **Enhance** | `enhance(radius,strength,threshold)` | `enhance(10,20,3)` |
+| **Sharpen** | `sharpen(amount)` | `sharpen(5)` (Higher = sharper) |
+| **Blur** | `blur(radius)` | `blur(10)` (Higher = stronger blur) |
+| **Smooth** | `smooth(radius)` | `smooth(10)` (Reduces noise) |
+| **Detail** | `detail(level)` | `detail(3)` (Enhance image details) |
 
-#### Background (`background` or `bg`)
-```
-background(color)
-```
-Options:
-- Color: `background(white)` - Named color
-- Hex: `background(#FF0000)` - Hex color
-- RGB: `background(255,0,0)` - With RGB
+---
 
-#### Gamma
-```
-gamma(value)
-```
-Options:
-- Range: `gamma(2.2)` - 1.0 to 3.0
+## **🔄 Transformation Operations**  
+| Operation | Usage | Example |
+|------------|-----------|-----------|
+| **Rotate** | `rotate(degrees)` | `rotate(90)`, `rotate(-45)` |
+| **Flip** | `flip(axis)` | `flip(x)`, `flip(y)`, `flip(xy)` |
+| **Crop** | `crop(x,y,width,height)` | `crop(0,0,300,300)` |
+| **Circle** | `circle(radius in percent)` | `circle(100)` (Crop into a full circle) |
 
-#### Watermark
-```
-watermark(text, color, fontSize, preset type)
-```
-Options:
-- Usage: `watermark(Copyright,white/rgb/hex,40,1)`
+---
 
-#### Extension
-```
-extension(format,options?)
-```
-Options:
-- Format: `extension(png)` - Change to PNG
-- Quality: `extension(jpeg)` - JPEG with quality
-- Supported formats: jpg, jpeg, png, webp, gif, avif, and tiff
+## **🎭 Masking & Background**  
+| Operation | Usage | Example |
+|------------|-----------|-----------|
+| **Background** | `background(color)` | `background(white)`, `background(#ff0000)` |
+| **Gamma** | `gamma(level)` | `gamma(2.2)` (Adjust gamma) |
+| **Watermark** | `watermark(text,color,size,preset type)` | `watermark(MyBrand,white,30,(1 or 2))` |
 
-## Chaining Examples
+---
+
+## **📄 Format Conversion**  
+| Operation | Usage | Example |
+|------------|-----------|-----------|
+| **Format** | `extension(format)` | `extension(jpg)`, `extension(png)`, `extension(webp)` |
+
+---
+
+## **📌 Chaining Multiple Operations**  
+You can **combine multiple transformations** in one request!  
 
 ```http
-GET /images/resize(300x300);circle(100)?src=example.jpg
+GET /images/resize(300x300);circle(100);gray()?src=https://example.com/sample.jpg
+GET /images/resize(300x300);circle(100);gray()?src=sample.jpg
+GET /images/resize(300x300);circle(100);gray()?src=profile-photos/user1.jpg
 ```
 
-## Notes
-- All operations are processed in order
-- Invalid parameters will fall back to defaults
-- Some operations may affect performance with large images
-- All percentage values should NOT include the % symbol
+---
+
+# **🔗 Example API Requests**  
+
+## **1️⃣ Resize Image and Convert to Grayscale**  
+```http
+GET /images/resize(400x400);gray()?src=https://example.com/sample.jpg
+```
+
+## **2️⃣ Crop and Apply Watermark**  
+```http
+GET /images/crop(0,0,300,300);watermark(Logo,white,30,1)?src=https://example.com/sample.jpg
+```
+
+---
+
+# **📌 Managing the Docker Container**  
+
+### **🛑 Stopping the Container**  
+```sh
+docker ps  # List running containers  
+docker stop <container_id>  # Stop the container  
+docker rm <container_id>  # Remove the container  
+```
+
+---
+
+# **⚡ Why Use This API?**  
+
+✔️ **Flexible** - Supports multiple image operations  
+✔️ **Fast** - Optimized for performance  
+✔️ **Chaining Support** - Apply multiple effects at once  
+✔️ **Multiple Formats** - Supports JPG, PNG, WebP, GIF, and more  
+✔️ **Self-Hosted** - Deploy it anywhere with Docker  
+
+---
+
+# **🤝 Contributing**  
+Feel free to **contribute**, open an **issue**, or suggest features on GitHub!  
