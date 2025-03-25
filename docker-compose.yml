@@ -5,10 +5,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
-    volumes:
-      - review-app:/usr/src/app/images
-
-# all your images would be in the volumes..
-
-volumes:
-  review-app:

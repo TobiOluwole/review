@@ -17,7 +17,8 @@ COPY . .
 RUN npm run build
 
 # use if not using docker compose
-# VOLUME /usr/src/app/images
+# make sure you know what volume so you can pull your code out
+VOLUME /usr/src/app/images
 
 # Expose the application port
 EXPOSE 3000
