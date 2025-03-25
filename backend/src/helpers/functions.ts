@@ -28,7 +28,6 @@ export async function isImage(url: string): Promise<ArrayBuffer> {
             throw new UnprocessableEntityException();
         }
     } catch (error) {
-        console.log(error)
         throw new InternalServerErrorException();
     }
 }

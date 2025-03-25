@@ -102,7 +102,7 @@ export class ImagesService {
   
     fs.writeFileSync(filePath, file.buffer);
   
-    return relative(uploadPath, filePath + '.' + extname);
+    return relative(uploadPath, filePath);
   }
 
   async deleteImage(name: string){
