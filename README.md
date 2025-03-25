@@ -15,7 +15,7 @@ docker pull tobioluwole/re-view:1.0.0
 
 ### **2️⃣ Run the Container**  
 ```sh
-docker run -d -p 3000:3000 tobioluwole/re-view
+docker run -d -p 3000:3000 tobioluwole/re-view:1.0.0
 ```
 Now access the API at:  
 ```
