@@ -16,9 +16,6 @@ export class ImagesController {
     @Res() res: Response,
     @Query('src') src: string
   ) {
-
-    if(!src) return 'Hello from Review.. get help at <a href="https://github.com/TobiOluwole/review">Our GitHub Documentation</a>';
-    
     const image = await this.imagesService.getImage(src, {});
 
     image.pipe(res)
